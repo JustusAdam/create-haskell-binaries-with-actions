@@ -7,13 +7,16 @@ name: Create Assets
 on:
   release:
     types: [published]
-
+    
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  ubuntu-build:
+  build:
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -31,32 +34,16 @@ jobs:
           ${{ runner.os }}-ca-${{ env.cache-name }}-
           ${{ runner.os }}-ca-
           ${{ runner.os }}-
-  
-    - name: Install dependencies
-      run: sudo apt-get install haskell-stack
 
     # Runs a single command using the runners shell
     - name: Build the project
-      run: |
-        stack build
+      run: stack build
         
     - name: Tar and strip the binary
       run: |
         export PROGRAM=chbwa
         cp `stack exec -- which $PROGRAM` $PROGRAM
-        ls -l $PROGRAM
-        strip $PROGRAM
-        ls -l $PROGRAM
         tar -cavf program.tar.gz $PROGRAM
-    
-    - name: Debug print some stuff
-      run: |
-        echo `which stack`
-        echo ${{ github.job }}
-        echo ${{ github.event_path }}
-        echo ${{ github.event.type }}
-        echo ${{ github.event.release.upload_url }}
-        echo ${{ github.event.release.assets_url }}
         
     - name: Upload assets
       id: upload-release-asset 
@@ -66,5 +53,5 @@ jobs:
       with:
         upload_url: ${{ github.event.release.upload_url }}
         asset_path: ./program.tar.gz
-        asset_name: program.tar.gz
+        asset_name: program-${{ runner.os }}.tar.gz
         asset_content_type: application/tar.gz
