@@ -52,8 +52,9 @@ jobs:
     - name: Debug print some stuff
       run: |
         echo `which stack`
-        echo ${{ github.event.upload_url }}
-        echo ${{ github.event.assets_url }}
+        echo ${{ github.event.payload.type }}
+        echo ${{ github.event.payload.release.upload_url }}
+        echo ${{ github.event.payload.release.assets_url }}
         
     - name: Upload assets
       id: upload-release-asset 
@@ -61,7 +62,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ github.event.upload_url }}
+        upload_url: ${{ github.event.payload.release.upload_url }}
         asset_path: ./program.tar.gz
         asset_name: program.tar.gz
         asset_content_type: application/tar.gz
