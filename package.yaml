@@ -1,0 +1,7 @@
+name: chbwa
+
+executables:
+  chbwa:
+    main: Main.hs
+    dependencies:
+      - base
