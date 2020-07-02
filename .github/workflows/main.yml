@@ -30,8 +30,11 @@ jobs:
         
     - name: Tar and strip the binary
       run: |
-        strip `stack exec -- which chbwa`
-        tar -cvf program.tar.gz `stack exec -- which cbwa`
+        export LOC=`stack exec -- which chbwa`
+        ls -l $LOC
+        strip $LOC
+        ls -l $LOC
+        tar -cvf program.tar.gz $LOC
         
     - name: Upload assets
       id: upload-release-asset 
