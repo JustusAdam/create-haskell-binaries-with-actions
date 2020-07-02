@@ -30,11 +30,17 @@ jobs:
         
     - name: Tar and strip the binary
       run: |
-        export LOC=`stack exec -- which chbwa`
-        ls -l $LOC
-        strip $LOC
-        ls -l $LOC
-        tar -cvf program.tar.gz $LOC
+        export PROGRAM=chbwa
+        cp `stack exec -- which $PROGRAM` $PROGRAM
+        ls -l $PROGRAM
+        strip $PROGRAM
+        ls -l $PROGRAM
+        tar -cavf program.tar.gz $PROGRAM
+    
+    - name: Debug print some stuff
+      run: |
+        echo ${{ github.event.upload_url }}
+        echo ${{ github.event.assets_url }}
         
     - name: Upload assets
       id: upload-release-asset 
@@ -42,7 +48,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ github.event.assets_url }} 
+        upload_url: ${{ github.event.upload_url }}
         asset_path: ./program.tar.gz
         asset_name: program.tar.gz
         asset_content_type: application/tar.gz
