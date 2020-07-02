@@ -26,7 +26,7 @@ jobs:
         cache-name: cache-tools-and-libraries
       with:
         path: ~/.stack
-        key: ${{ runner.os }}-ca-{{ env.cache-name }}-${{ hashFiles('**/stack.yaml.lock') }}
+        key: ${{ runner.os }}-ca-${{ env.cache-name }}-${{ hashFiles('**/stack.yaml.lock') }}
         restore-keys: |
           ${{ runner.os }}-ca-${{ env.cache-name }}-
           ${{ runner.os }}-ca-
